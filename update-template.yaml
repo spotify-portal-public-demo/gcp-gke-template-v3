@@ -28,7 +28,7 @@ spec:
       action: debug:log
       each: ${{ steps.get_entities.output.results[0] }}
       input:
-        message: ${{ each.value | dump }}
+        message: ${{ each.value.metadata.annotations | dump }}
 
     - id: debug2
       name: Debug
