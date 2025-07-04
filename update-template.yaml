@@ -37,6 +37,8 @@ spec:
           - limit: 10
             fields:
               - metadata.name
+            filter:
+              metadata.name: my-gke-cluster
             # filter:
               # metadata.annotations['backstage.io/source-template']: template:default/gcp-gke-template-create
 
