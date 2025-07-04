@@ -1,8 +1,8 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: gcp-gke-template-update
-  title: GCP - GKE (Kubernetes) - Update
+  name: gcp-gke-template-update-v3
+  title: GCP - GKE (Kubernetes) - Update - V3
   description: Update a GKE (Kubernetes) cluster in GCP
   tags:
     - infra
