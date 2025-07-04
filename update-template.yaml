@@ -13,21 +13,6 @@ spec:
   owner: group:infraops
   type: kubernetes
 
-  parameters:
-    - title: Choose Entity
-      required:
-        - entity
-      properties:
-        entity:
-          title: Entity
-          type: string
-          description: Entity to be updated
-          ui:field: EntityPicker
-          ui:options:
-            catalogFilter:
-              - kind: Resource
-                spec.type: kubernetes
-
   steps:
     - id: get_entities
       name: Get Entities
@@ -35,65 +20,51 @@ spec:
       input:
         queries:
           - limit: 10
-            fields:
-              - metadata.name
             filter:
               metadata.annotations.backstage.io/source-template: template:default/gcp-gke-template-create
 
-    - id: debug1
-      name: log
-      action: debug:log
-      input:
-        message: ${{ steps.get_entities.output.results[0] | dump }}
-
-    - id: debug
-      name: log
-      action: debug:log
-      each: ${{ steps.get_entities.output.results[0] }}
-      input:
-        message: ${{ each.value.metadata.name }}
-        # message: ${{ steps.get_entities.output.results[0].items[0].metadata.name }}
-
-    - id: get_entity
-      name: Get Entity
-      action: catalog:fetch
-      input:
-        entityRef: ${{ parameters.entity }}
-
-    - id: fetch_entity
+    - id: fetch_entities
       name: Fetch Entity
       action: fetch:plain
+      each: ${{ steps.get_entities.output.results[0] }}
       input:
-        url: ${{ steps.get_entity.output.entity.metadata.annotations['backstage.io/source-location'] | replace('url:', '') }}
+        url: ${{ each.value.metadata.annotations.backstage.io/source-location | replace('url:', '') }}
+        targetPath: ${{ each.value.metadata.name }}
 
     - id: read_params
       name: Read Params
       action: roadiehq:utils:fs:parse
+      each: ${{ steps.get_entities.output.results[0] }}
       input:
-        path: .template.json
+        path: ${{ each.value.metadata.name }}/.template.json
         parser: json
 
     - id: template
       name: Fetch Skeleton
       action: fetch:template
+      each: ${{ steps.get_entities.output.results[0] }}
       input:
-        url: ./skeleton
+        url: ${{ each.value.metadata.name }}/skeleton
         replace: true
-        values: ${{ steps.read_params.output.content }}
+        values: ${{ steps.read_params.output[each.key].content }}
+        targetPath: ${{ each.value.metadata.name }}
 
     - id: update_pr
       name: Update PR
       action: publish:github:pull-request
+      each: ${{ steps.get_entities.output.results[0] }}
       input:
-        repoUrl: github.com?owner=${{ steps.read_params.output.content.organisation }}&repo=${{ steps.read_params.output.content.component_id }}
+        repoUrl: github.com?owner=${{ steps.read_params.output[each.key].content.organisation }}&repo=${{ steps.read_params.output[each.key].content.component_id }}
         branchName: update-from-template
         title: update from template
         description: This PR updates the entity with the latest version
         update: true
+        sourcePath: ${{ each.value.metadata.name }}
 
   # TODO: try to not send PR if there are no changes, then log message in output
 
   output:
-    links:
-      - title: Update PR
-        url: ${{ steps.update_pr.output.remoteUrl }}
+    text: All PRs were created... (TODO: show count)
+    # links:
+    #   - title: Update PR
+    #     url: ${{ steps.update_pr.output.remoteUrl }}
