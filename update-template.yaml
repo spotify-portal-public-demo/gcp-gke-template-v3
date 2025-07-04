@@ -64,8 +64,8 @@ spec:
   # TODO: try to not send PR if there are no changes, then log message in output
 
   output:
-    - text:
-        title: PRs Created
+    text:
+      - title: PRs Created
         content: |
           All PRs were created... (TODO: show count)
     # links:
