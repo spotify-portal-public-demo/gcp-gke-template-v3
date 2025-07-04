@@ -39,7 +39,7 @@ spec:
         path: ${{ each.value.metadata.name }}/.template.json
         parser: json
 
-    - id: debug2
+    - id: debug
       name: Debug
       action: debug:log
       input:
@@ -52,7 +52,7 @@ spec:
       input:
         url: ${{ each.value.metadata.name }}/skeleton
         replace: true
-        values: ${{ steps.read_params.outputs[each.key].content }}
+        values: ${{ steps.read_params.output.content[each.key] }}
         targetPath: ${{ each.value.metadata.name }}
 
     - id: update_pr
@@ -60,7 +60,7 @@ spec:
       action: publish:github:pull-request
       each: ${{ steps.get_entities.output.results[0] }}
       input:
-        repoUrl: github.com?owner=${{ steps.read_params.outputs[each.key].content.organisation }}&repo=${{ steps.read_params.outputs[each.key].content.component_id }}
+        repoUrl: github.com?owner=${{ steps.read_params.output.content[each.key].organisation }}&repo=${{ steps.read_params.output.content[each.key].component_id }}
         branchName: update-from-template
         title: update from template
         description: This PR updates the entity with the latest version
