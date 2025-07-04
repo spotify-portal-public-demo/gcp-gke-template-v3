@@ -38,7 +38,7 @@ spec:
             fields:
               - metadata.name
             filter:
-              metadata.annotations['backstage.io/source-template']: template:default/gcp-gke-template-create
+              metadata.annotations.backstage.io/source-template: template:default/gcp-gke-template-create
 
     - id: debug1
       name: log
