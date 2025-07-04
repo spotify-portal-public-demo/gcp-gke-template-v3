@@ -40,6 +40,12 @@ spec:
             filter:
               metadata.annotations['backstage.io/source-template']: template:default/gcp-gke-template-create
 
+    - id: debug1
+      name: log
+      action: debug:log
+      input:
+        message: ${{ steps.get_entities.output.results[0] | dump }}
+
     - id: debug
       name: log
       action: debug:log
