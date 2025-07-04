@@ -38,15 +38,14 @@ spec:
             fields:
               - metadata.name
             filter:
-              metadata.name: my-gke-cluster
-            # filter:
-              # metadata.annotations['backstage.io/source-template']: template:default/gcp-gke-template-create
+              metadata.annotations['backstage.io/source-template']: template:default/gcp-gke-template-create
 
     - id: debug
       name: log
       action: debug:log
+      each: ${{ steps.get_entities.output.results[0] }}
       input:
-        message: ${{ steps.get_entities.output.results[0][0].metadata.name }}
+        message: ${{ each.metadata.name }}
         # message: ${{ steps.get_entities.output.results[0].items[0].metadata.name }}
 
     - id: get_entity
