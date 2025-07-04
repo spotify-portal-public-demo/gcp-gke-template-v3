@@ -64,8 +64,10 @@ spec:
   # TODO: try to not send PR if there are no changes, then log message in output
 
   output:
-    text: |
-      All PRs were created... (TODO: show count)
+    text:
+      title: PRs Created
+      content: |
+        All PRs were created... (TODO: show count)
     # links:
     #   - title: Update PR
     #     url: ${{ steps.update_pr.output.remoteUrl }}
