@@ -37,8 +37,8 @@ spec:
           - limit: 10
             fields:
               - metadata.name
-            filter:
-              metadata.annotations['backstage.io/source-template']: template:default/gcp-gke-template-create
+            # filter:
+              # metadata.annotations['backstage.io/source-template']: template:default/gcp-gke-template-create
 
     - id: debug
       name: log
