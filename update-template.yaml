@@ -35,14 +35,14 @@ spec:
       action: debug:log
       each: ${{ steps.get_entities.output.results[0] }}
       input:
-        message: ${{ each.value.metadata.annotations.backstage.io/source-location | replace('url:', '') }}
+        message: ${{ each.value.metadata.annotations['backstage.io/source-location'] | replace('url:', '') }}
 
     - id: fetch_entities
       name: Fetch Entity
       action: fetch:plain
       each: ${{ steps.get_entities.output.results[0] }}
       input:
-        url: ${{ each.value.metadata.annotations.backstage.io/source-location | replace('url:', '') }}
+        url: ${{ each.value.metadata.annotations['backstage.io/source-location'] | replace('url:', '') }}
         targetPath: ${{ each.value.metadata.name }}
 
     - id: read_params
