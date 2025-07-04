@@ -39,6 +39,12 @@ spec:
         path: ${{ each.value.metadata.name }}/.template.json
         parser: json
 
+    - id: debug2
+      name: Debug
+      action: debug:log
+      input:
+        message: ${{ steps.reach_params | dump }}
+
     - id: template
       name: Fetch Skeleton
       action: fetch:template
@@ -46,21 +52,15 @@ spec:
       input:
         url: ${{ each.value.metadata.name }}/skeleton
         replace: true
-        values: ${{ steps.read_params.output[each.key].content }}
+        values: ${{ steps.read_params.outputs[each.key].content }}
         targetPath: ${{ each.value.metadata.name }}
-
-    - id: debug2
-      name: Debug
-      action: debug:log
-      input:
-        listWorkspace: true
 
     - id: update_pr
       name: Update PR
       action: publish:github:pull-request
       each: ${{ steps.get_entities.output.results[0] }}
       input:
-        repoUrl: github.com?owner=${{ steps.read_params.output[each.key].content.organisation }}&repo=${{ steps.read_params.output[each.key].content.component_id }}
+        repoUrl: github.com?owner=${{ steps.read_params.outputs[each.key].content.organisation }}&repo=${{ steps.read_params.outputs[each.key].content.component_id }}
         branchName: update-from-template
         title: update from template
         description: This PR updates the entity with the latest version
