@@ -1,8 +1,8 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: gcp-gke-template-create
-  title: GCP - GKE (Kubernetes) - Create
+  name: gcp-gke-template-create-v3
+  title: GCP - GKE (Kubernetes) - Create - V3
   description: Create a GKE (Kubernetes) cluster in GCP
   tags:
     - infra
