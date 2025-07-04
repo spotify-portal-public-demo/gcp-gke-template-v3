@@ -1,0 +1,74 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: gcp-gke-template-update
+  title: GCP - GKE (Kubernetes) - Update
+  description: Update a GKE (Kubernetes) cluster in GCP
+  tags:
+    - infra
+    - terraform
+    - gcp
+    - gke
+spec:
+  owner: group:infraops
+  type: kubernetes
+
+  parameters:
+    - title: Choose Entity
+      required:
+        - entity
+      properties:
+        entity:
+          title: Entity
+          type: string
+          description: Entity to be updated
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Resource
+                spec.type: kubernetes
+
+  steps:
+    - id: get_entity
+      name: Get Entity
+      action: catalog:fetch
+      input:
+        entityRef: ${{ parameters.entity }}
+
+    - id: fetch_entity
+      name: Fetch Entity
+      action: fetch:plain
+      input:
+        url: ${{ steps.get_entity.output.entity.metadata.annotations['backstage.io/source-location'] | replace('url:', '') }}
+
+    - id: read_params
+      name: Read Params
+      action: roadiehq:utils:fs:parse
+      input:
+        path: .template.json
+        parser: json
+
+    - id: template
+      name: Fetch Skeleton
+      action: fetch:template
+      input:
+        url: ./skeleton
+        replace: true
+        values: ${{ steps.read_params.output.content }}
+
+    - id: update_pr
+      name: Update PR
+      action: publish:github:pull-request
+      input:
+        repoUrl: github.com?owner=${{ steps.read_params.output.content.organisation }}&repo=${{ steps.read_params.output.content.component_id }}
+        branchName: update-from-template
+        title: update from template
+        description: This PR updates the entity with the latest version
+        update: true
+
+  # TODO: try to not send PR if there are no changes, then log message in output
+
+  output:
+    links:
+      - title: Update PR
+        url: ${{ steps.update_pr.output.remoteUrl }}
