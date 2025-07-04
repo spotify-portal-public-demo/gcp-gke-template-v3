@@ -38,13 +38,13 @@ spec:
             fields:
               - metadata.name
             filter:
-              metadata.annotations.backstage.io/source-template: template:default/gcp-gke-template-create
+              metadata.annotations['backstage.io/source-template']: template:default/gcp-gke-template-create
 
     - id: debug
       name: log
       action: debug:log
       input:
-        message: ${{ steps.get_entities.output | json }}
+        message: ${{ steps.get_entities.output.results[0].items[0].metadata.name }}
 
     - id: get_entity
       name: Get Entity
