@@ -2,7 +2,7 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "6.30.0"
+      version = "6.42.0"
     }
   }
 
@@ -23,5 +23,5 @@ resource "google_container_cluster" "${{ values.component_id }}" {
   location         = "${{ values.region }}"
   enable_autopilot = true
 
-  deletion_protection = true
+  deletion_protection = false
 }
