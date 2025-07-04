@@ -46,7 +46,8 @@ spec:
       name: log
       action: debug:log
       input:
-        message: ${{ steps.get_entities.output.results[0].items[0].metadata.name }}
+        message: ${{ steps.get_entities.output.results }}
+        # message: ${{ steps.get_entities.output.results[0].items[0].metadata.name }}
 
     - id: get_entity
       name: Get Entity
