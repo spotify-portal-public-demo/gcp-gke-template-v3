@@ -23,6 +23,20 @@ spec:
             filter:
               metadata.annotations.backstage.io/source-template: template:default/gcp-gke-template-create
 
+    - id: debug1
+      name: Debug
+      action: debug:log
+      each: ${{ steps.get_entities.output.results[0] }}
+      input:
+        message: ${{ each.value | dump }}
+
+    - id: debug2
+      name: Debug
+      action: debug:log
+      each: ${{ steps.get_entities.output.results[0] }}
+      input:
+        message: ${{ each.value.metadata.annotations.backstage.io/source-location | replace('url:', '') }}
+
     - id: fetch_entities
       name: Fetch Entity
       action: fetch:plain
