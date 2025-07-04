@@ -29,6 +29,23 @@ spec:
                 spec.type: kubernetes
 
   steps:
+    - id: get_entities
+      name: Get Entities
+      action: catalog:query:plus
+      input:
+        queries:
+          - limit: 10
+            fields:
+              - metadata.name
+            filter:
+              metadata.annotations.backstage.io/source-template: template:default/gcp-gke-template-create
+
+    - id: debug
+      name: log
+      action: debug:log
+      input:
+        message: ${{ steps.get_entities.output.results[0].metadata.name }}
+
     - id: get_entity
       name: Get Entity
       action: catalog:fetch
